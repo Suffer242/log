@@ -11,7 +11,7 @@ namespace log
             .Where(f=>f.Contains("\",\"Reg") && f.ToLower().Contains("write") );
 
             System.IO.File.WriteAllLines(@"e:\Games\Eagle Dynamics\Logfile.CSV.txt.txt",o);
-
+     
             Console.WriteLine("Hello World!");
         }
     }
