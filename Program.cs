@@ -12,7 +12,7 @@ namespace log
 
             System.IO.File.WriteAllLines(@"e:\Games\Eagle Dynamics\Logfile.CSV.txt.txt",o);
       
-            Console.WriteLine("Hello World!");
+         
         }
     }
 }
