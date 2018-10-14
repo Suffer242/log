@@ -7,12 +7,15 @@ namespace log
     {
         static void Main(string[] args)
         {
-            var o = System.IO.File.ReadAllLines(@"e:\Games\Eagle Dynamics\Logfile.CSV.txt")
-            .Where(f=>f.Contains("\",\"Reg") && f.ToLower().Contains("write") );
+          var f1 = new File(@"e:\Games\Eagle Dynamics\DCS World\");
+          var f2 = new File(@"g:\dcs\DCS World\");
 
-            System.IO.File.WriteAllLines(@"e:\Games\Eagle Dynamics\Logfile.CSV.txt.txt",o);
-      
-         
+          var f = f1.GetMissingFiles(f2);
+
+          foreach (var item in f)
+          {
+              Console.WriteLine(item);
+          }
         }
     }
 }
