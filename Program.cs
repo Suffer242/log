@@ -8,29 +8,36 @@ namespace log
     {
         static void Main(string[] args)
         {
-          var f1 = new File(@"e:\Games\_log_test\ver1\");
-          var f2 = new File(@"e:\Games\_log_test\ver2\");
+          var f1 = new File(@"_log_test\ver1\");
+          var f2 = new File(@"_log_test\ver2\");
 
-          Console.WriteLine("before");
+          Console.WriteLine("before f1");
           foreach (var item in f1.files)
           {
               Console.WriteLine(item);
           }
 
-         // f1.files.ExceptWith(f2.files);
-
-        var f = f1.GetMissingFiles(f2);
-
-         // var hs = new HashSet<fileInfo>();
-
-        
-         // foreach (var item in f) hs.Add(item);
-
-            Console.WriteLine("after");
-          foreach (var item in f)
+          Console.WriteLine("before f2");
+          foreach (var item in f2.files)
           {
               Console.WriteLine(item);
           }
+
+
+
+
+            Console.WriteLine("f1 miss");
+          foreach (var item in f1.GetMissingFiles(f2))
+          {
+              Console.WriteLine(item);
+          }
+
+            Console.WriteLine("f2 miss");
+          foreach (var item in f2.GetMissingFiles(f1))
+          {
+              Console.WriteLine(item);
+          }
+
         }
     }
 }

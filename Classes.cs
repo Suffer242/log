@@ -7,27 +7,27 @@ public class comp : IEqualityComparer<fileInfo>
 {
     public bool Equals(fileInfo x, fileInfo y)
     {
-        return x.relativeName==y.relativeName && x.length==y.length && x.createDate==y.createDate;
+        return x.RelativeName==y.RelativeName && x.Length==y.Length && x.CreateDate==y.CreateDate;
     }
 
     public int GetHashCode(fileInfo obj)
     {
        // return obj.relativeName.GetHashCode()+obj.length.GetHashCode()+obj.createDate.GetHashCode();
-        return obj.ToString().GetHashCode();
+        return obj.CreateDate.GetHashCode() ^ obj.RelativeName.GetHashCode() ^ obj.Length.GetHashCode();
     }
 }
 public class File {
 
     public File(string rootdir)
     {
-          rootDir = rootdir; if (!rootDir.EndsWith('\\')) rootDir+='\\';
-          var len  = rootdir.Length;
+          rootDir = Path.GetFullPath(rootdir); if (!rootDir.EndsWith('\\')) rootDir+='\\';
+          var len  = rootDir.Length;
           var di = new DirectoryInfo(rootDir);
           files =  di.GetFiles("*.*",SearchOption.AllDirectories)
-          .Select(fileInfo => new fileInfo { relativeName = fileInfo.FullName.Substring(len), length = fileInfo.Length, createDate = fileInfo.LastWriteTime}).ToHashSet(new comp());
+          .Select(fileInfo => new fileInfo(fileInfo.FullName.Substring(len),fileInfo.LastWriteTime,fileInfo.Length)).ToArray();
     }
     public string rootDir {get; private set;}
-    public HashSet<fileInfo> files {get; private set;}
+    public fileInfo[] files {get; private set;}
 
     public IEnumerable<fileInfo> GetMissingFiles(File withFile)
     {
@@ -39,18 +39,26 @@ public class File {
 }
 
 public class fileInfo {
-
- 
-    public  string relativeName;
-    public  DateTime  createDate; 
-    public  long  length;
+    public fileInfo(string relativeName,DateTime  createDate ,long  length )
+    {
+        RelativeName = relativeName;
+        CreateDate = createDate;
+        Length = length;
+    }
+    public  string RelativeName {get;private set;}
+    public  DateTime  CreateDate {get;private set;}
+    public  long  Length {get;private set;}
 
     public override string ToString()
     {
-        return $"{relativeName} - {createDate} - {length}";
+        return $"{RelativeName} - {CreateDate}.{CreateDate.Millisecond:d3} - {Length}";
     }
-    public override int GetHashCode()
+
+    public (int,int) GetInts()
     {
-        return relativeName.GetHashCode() + createDate.GetHashCode()+length.GetHashCode();
+        return (10,20);
     }
+
 }
+
+
