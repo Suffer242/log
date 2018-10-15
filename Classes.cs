@@ -1,7 +1,21 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+public class comp : IEqualityComparer<fileInfo>
+{
+    public bool Equals(fileInfo x, fileInfo y)
+    {
+        return x.relativeName==y.relativeName && x.length==y.length && x.createDate==y.createDate;
+    }
+
+    public int GetHashCode(fileInfo obj)
+    {
+       // return obj.relativeName.GetHashCode()+obj.length.GetHashCode()+obj.createDate.GetHashCode();
+        return obj.ToString().GetHashCode();
+    }
+}
 public class File {
 
     public File(string rootdir)
@@ -10,14 +24,17 @@ public class File {
           var len  = rootdir.Length;
           var di = new DirectoryInfo(rootDir);
           files =  di.GetFiles("*.*",SearchOption.AllDirectories)
-          .Select(fileInfo => new fileInfo { relativeName = fileInfo.FullName.Substring(len), length = fileInfo.Length, createDate = fileInfo.LastWriteTime}).ToArray();
+          .Select(fileInfo => new fileInfo { relativeName = fileInfo.FullName.Substring(len), length = fileInfo.Length, createDate = fileInfo.LastWriteTime}).ToHashSet(new comp());
     }
     public string rootDir {get; private set;}
-    public fileInfo[] files {get; private set;}
+    public HashSet<fileInfo> files {get; private set;}
 
-    public fileInfo[] GetMissingFiles(File withFile)
+    public IEnumerable<fileInfo> GetMissingFiles(File withFile)
     {
-        return withFile.files.Where(f=>files.FirstOrDefault(fl=>fl.relativeName == f.relativeName && fl.length==f.length && fl.createDate==f.createDate )==null).ToArray();
+        var temp = new HashSet<fileInfo>(files,new comp());
+        temp.ExceptWith(withFile.files);
+
+         return temp.ToArray();
     }
 }
 
@@ -31,5 +48,9 @@ public class fileInfo {
     public override string ToString()
     {
         return $"{relativeName} - {createDate} - {length}";
+    }
+    public override int GetHashCode()
+    {
+        return relativeName.GetHashCode() + createDate.GetHashCode()+length.GetHashCode();
     }
 }
