@@ -26,7 +26,7 @@ namespace log
         
          // foreach (var item in f) hs.Add(item);
 
- Console.WriteLine("after");
+            Console.WriteLine("after");
           foreach (var item in f)
           {
               Console.WriteLine(item);
